@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  backend:
+    image: sagarkumar977/student-performance-api:latest
+    container_name: student-performance-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      AUTO_SETUP: "true"
+      DB_HOST: host.docker.internal
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: student_system
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: HS256
+      TEACHER_AUTH: teacher_auth_key
+      ADMIN_AUTH: admin_auth_key
+      FRONTEND_URL: http://localhost:3000
+
+  frontend:
+    image: sagarkumar977/student-performance-ui:latest
+    container_name: student-performance-ui
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
